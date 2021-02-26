@@ -1,0 +1,53 @@
+From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
+Subject.US-ASCII: Please confirm your message - Mail an Graubitz bitte bestaetigen
+Reply-To.US-ASCII: %(confirm_accept_address)s
+BodyCharset: US-ASCII
+
+DEUTSCHER TEXT:
+--------------
+
+Sie haben eben versucht mir eine E-Mail zu schicken. Leider 
+wurde Ihre E-Mail-Adresse noch nie von mir verifiziert. Um Spammails
+zu vermeiden bitte ich Sie mir nochmals eine leere E-Mail ohne Subject 
+und ohne Text zu schicken.
+
+Anstatt meiner E-Mail-Adresse graubitz@open-source-consultants.de verwenden Sie
+bitte die Adresse %(confirm_accept_address)s 
+
+Ihre E-Mail wird dann von meiner Software durchgestellt. Sie bekommen dann eine
+Mail mit dem Titel "Confirmation accepted" 
+
+Bespiel: 
+
+eben von Ihnen verwendet: 
+An: graubitz@open-source-consultants.de
+jetzt bitte nochmals eine E-Mail 
+An: %(confirm_accept_address)s
+
+Vielen Dank
+
+ENGLISH TEXT
+------------
+
+This message was created automatically by mail delivery software (TMDA).
+
+Your message attached below is being held because the address
+<%(confirm_append_address)s> has not been verified.
+
+To release your message for delivery, please send an empty message
+to the following address, or use your mailer's "Reply" feature (no subject is
+needed)
+
+Example: 
+
+In youre last mail you used: 
+To: graubitz@open-source-consultants.de
+For releasing your mail send an empty message:
+To: %(confirm_accept_address)s
+
+This confirmation verifies that your message is legitimate and not
+junk-mail. You should only have to confirm your address once. You also get a
+mail with the subject "Confirmation accepted"
+
+If you do not respond to this confirmation request within %(pending_lifetime)s,
+your message will not be delivered.
