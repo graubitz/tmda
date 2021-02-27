@@ -59,7 +59,7 @@ class OriginalQueue(Queue):
 
     def _create(self):
         if not self.exists():
-            os.makedirs(Defaults.PENDING_DIR, 0700)
+            os.makedirs(Defaults.PENDING_DIR, 0o700)
 
 
     def _convert(self):
@@ -126,7 +126,7 @@ class OriginalQueue(Queue):
 
     def fetch_message(self, mailid, fullParse=False):
         fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
-        msg = Util.msg_from_file(file(fpath, 'r'),fullParse=fullParse)
+        msg = Util.msg_from_file(open(fpath, 'r'),fullParse=fullParse)
         return msg
 
 

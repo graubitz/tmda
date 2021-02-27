@@ -118,12 +118,12 @@ class Queue:
     def init(self):
         qformat = Defaults.PENDING_QUEUE_FORMAT
         if qformat.lower() == 'original':
-            from OriginalQueue import OriginalQueue
+            from . import OriginalQueue
             return OriginalQueue()
         if qformat.lower() == 'maildir':
-            from MaildirQueue import MaildirQueue
+            from . import MaildirQueue
             return MaildirQueue()
         else:
-            raise Errors.ConfigError, \
-                "Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat
+            raise Errors.ConfigError(
+                "Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat)
 

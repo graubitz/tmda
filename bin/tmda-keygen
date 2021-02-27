@@ -29,7 +29,7 @@ import sys
 try:
     import paths
 except ImportError:
-    # Prepend /usr/lib/python2.x/site-packages/TMDA/pythonlib
+    # Prepend /usr/lib/python3.x/site-packages/TMDA/pythonlib
     sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
                            'site-packages', 'TMDA', 'pythonlib')
     sys.path.insert(0, sitedir)
@@ -59,7 +59,7 @@ parser = OptionParser(option_list=opt_list, description=opt_desc,
 (opts, args) = parser.parse_args()
 
 if opts.full_version:
-    print Version.ALL
+    print (Version.ALL)
     sys.exit()
 
 
@@ -80,7 +80,7 @@ def keygen():
 def main():
     
     if not opts.batch:
-        print "Generating a unique, 160-bit private key, please wait a moment.."
+        print("Generating a unique, 160-bit private key, please wait a moment..")
         print
 
     key = keygen()
@@ -89,26 +89,26 @@ def main():
         # Use of a cryptographic random number generator is required.
         warning = ("key generation on a system without a "
                    + opts.device + " device is not supported!")
-        print "WARNING:"
-        print '*' * len(warning)
-        print warning
+        print("WARNING:")
+        print('*' * len(warning))
+        print(warning)
         print
-        print "specify a different random number device with the '-d' option,"
-        print "or use http://tmda.net/cgi-bin/tmda-keygen if your system lacks one."
-        print '*' * len(warning)
-        print "exiting!"
+        print("specify a different random number device with the '-d' option,")
+        print("or use http://tmda.net/cgi-bin/tmda-keygen if your system lacks one.")
+        print('*' * len(warning))
+        print("exiting!")
         sys.exit()
         
-    if len(key) <> 40:
-        print "Oops, generated key is not 40-characters long, exiting!"
+    if len(key) != 40:
+        print("Oops, generated key is not 40-characters long, exiting!")
         sys.exit()
 
-    print key
+    print (key)
     
     if not opts.batch:
         print
-        print "Now paste the above key into ~/.tmda/crypt_key"
-        print "and make sure to keep your key secret! (chmod 600 ~/.tmda/crypt_key)"
+        print("Now paste the above key into ~/.tmda/crypt_key")
+        print("and make sure to keep your key secret! (chmod 600 ~/.tmda/crypt_key)")
 
 
 # This is the end my friend.

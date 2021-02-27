@@ -34,7 +34,7 @@ Copyright (C) 2002 Paul Rubin
 """
 
 from array import array
-import sha
+import hashlib
 
 
 _ipad="\x36"*64
@@ -42,13 +42,13 @@ _opad="\x5C"*64
 
 _itrans = array('B', [0]*256) 
 _otrans = array('B', [0]*256)     
-for i in xrange(256): 
+for i in range(256):
     _itrans[i] = i ^ 0x36 
     _otrans[i] = i ^ 0x5c 
 _itrans = _itrans.tostring() 
 _otrans = _otrans.tostring() 
 
-newh = sha.new
+newh = hashlib.new
 
 class hmac:
     def __init__(self, k, m=None):

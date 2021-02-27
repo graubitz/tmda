@@ -25,18 +25,18 @@
 import base64
 import hmac
 import imaplib
-import md5
+import hashlib
 import os
-import popen2
+import popen
 import poplib
 import socket
 import sys
 import time
 
 # TMDA imports
-import Version
-import Util
-import Errors
+from . import Version
+from . import Util
+from . import Errors
 
 class Auth(Util.Debugable):
     """Authentication mechanisms for TMDA"""
@@ -90,7 +90,7 @@ class Auth(Util.Debugable):
         self.__owner_username = None
         if self.running_as_root:
             self.__owner_username = self.__default_owner_username
-        elif os.environ.has_key("HOME"):
+        elif "HOME" in os.environ:
             self.__owner_tmda_path = os.path.join(os.path.expanduser('~'), \
                                                   self.__default_tmda_dir)
         self.__defaultauthfile = os.path.join(self.__owner_tmda_path, \
@@ -128,7 +128,7 @@ class Auth(Util.Debugable):
         self.__use_confdir = 0
         self.__use_vhome = 0
         if vlookupscript is not None:
-            self.setup_vuser( vlookupscript, vdomainfile )
+            self.setup_vuser( vlookupscript)
         elif configdir is not None:
             self.setup_configdir( configdir )
 
@@ -177,7 +177,7 @@ class Auth(Util.Debugable):
             file = self.__defaultauthfile
         self.debug( "Setting up file authentication with file '%s'" % file )
         if not Util.CanRead(file, raiseError = 0):
-            raise ValueError, "File '%s' does not exist" % file
+            raise ValueError("File '%s' does not exist" % file)
         self.__authtype = "file"
         self.__authfile = file
         self.__authfile_allows_cleartext = Util.getfilemode(file) in (400, 600)
@@ -206,17 +206,17 @@ class Auth(Util.Debugable):
             if not Util.CanExec(trueprog, raiseError = 0):
                 trueprog = "/bin/true"
                 if not Util.CanExec(trueprog, raiseError = 0):
-                    raise ValueError, \
+                    raise ValueError(
                         "Could not locate /usr/bin/true or /bin/true.\n" + \
-                        "Please supply this with the checkpassword program"
+                        "Please supply this with the checkpassword program")
             args = trueprog
         # Make sure that checkpassword program exists and is executable.
         try:
             if not Util.CanExec(realprogram, self.__ownerID):
-                raise ValueError, "Checkpassword program '%s'" % realprogram + \
-                    " not executable by userid %d" % self.__ownerID
+                raise ValueError("Checkpassword program '%s'" % realprogram + \
+                    " not executable by userid %d" % self.__ownerID)
         except IOError:
-            raise ValueError, "'%s' does not exist" % realprogram
+            raise ValueError("'%s' does not exist" % realprogram)
         self.__authtype = 'checkpw'
         self.__authprog = "%s %s" % (checkpw, args)
         self.debug( "Auth program is '%s'" % self.__authprog )
@@ -234,8 +234,8 @@ class Auth(Util.Debugable):
         except ValueError:
             authproto, arg = URI, None
         if authproto not in self.allowed_protocols:
-            raise ValueError, "Protocol '%s' not supported.\n" % authproto + \
-                    "Must be one of %s" % repr(self.allowed_protocols)
+            raise ValueError("Protocol '%s' not supported.\n" % authproto + \
+                    "Must be one of %s" % repr(self.allowed_protocols))
         self.__authremote['proto'] = authproto
         self.__authremote['port'] = self.__defaultauthports[authproto]
         if arg:
@@ -257,17 +257,17 @@ class Auth(Util.Debugable):
             try:
                 import ldap
             except ImportError:
-                raise ValueError, \
+                raise ValueError(
                     "Ldap not supported: python-ldap " + \
-                    "(http://python-ldap.sf.net/) required."
+                    "(http://python-ldap.sf.net/) required.")
             if self.__authremote['dn'] == '':
-                raise ValueError, \
-                    "Missing ldap dn (format ldap://host[:port]/dn)"
+                raise ValueError(
+                    "Missing ldap dn (format ldap://host[:port]/dn)")
             try:
                 self.__authremote['dn'].index('%(user)s')
             except:
-                raise ValueError, \
-                    "Invalid ldap dn (must contain %%(user)s)"
+                raise ValueError(
+                    "Invalid ldap dn (must contain %%(user)s)")
         self.__authtype = "remote"
         self.__authremote['enable'] = 1
 
@@ -279,11 +279,10 @@ class Auth(Util.Debugable):
                     % self.__authtype
             retval = eval( cmd )
         except AttributeError:
-            raise Errors.AuthError, \
-                 ( "Unknown authentication type '%s'." % self.__authtype, \
+            raise Errors.AuthError( "Unknown authentication type '%s'." % self.__authtype, \
                    "Available choices for authentication type are %s" % \
                     repr(self.allowed_authtypes) )
-        except Errors.AuthError, err:
+        except Errors.AuthError as err:
             raise err
         self.debug( "Authentication returned: %d" % retval )
         return retval
@@ -294,12 +293,11 @@ class Auth(Util.Debugable):
                                         self.__b64_decode(password) )
 
     def authenticate_cram_md5(self, response, ticket, response_encoded = 1, \
-                              digestmod = md5):
+                              digestmod = hashlib.md5):
         """Authenticates a cram_md5 response based on a ticket.
            Expects a base-64 encoded "response" unless otherwise specified."""
         if not self.supports_cram_md5():
-            raise Errors.AuthError, \
-              ( "Cram MD5 authentication not supported.",\
+            raise Errors.AuthError( "Cram MD5 authentication not supported.",\
                 "Ensure that file authentication is being used, and check " + \
                 "file permissions" )
         if response_encoded:
@@ -341,18 +339,18 @@ class Auth(Util.Debugable):
         self.__use_confdir = 1
         self.__use_vhome = 0
 
-    def get_homedir( username, domain = None ):
+    def get_homedir(self, username, domain = None ):
         if self.__use_configdir:
             return os.path.join( os.path.expanduser(self.__configdir), \
                                  username )
         elif self.__use_vhome:
             if domain is None:
-                raise ValueError, "domain is requined for virtual users"
-            return Util.getvuserhomedir(user, domain, self.__vlookupscript)
+                raise ValueError("domain is requined for virtual users")
+            return Util.getvuserhomedir(username, domain, self.__vlookupscript)
         else:
             return Util.gethomedir( username )
 
-    def get_tmdadir( username, domain = None ):
+    def get_tmdadir(self, username, domain = None ):
         return os.path.join( self.get_homedir( username, domain ), \
                              self.__default_tmda_dir )
 
@@ -366,13 +364,11 @@ class Auth(Util.Debugable):
         pw = self.__authdict.get(username.lower(), 0)
         if pw == 0:
             self.debug( "No user %s" % username.lower() )
-            raise Errors.AuthError, \
-                ( "User %s not found in password file" % username, \
+            raise Errors.AuthError( "User %s not found in password file" % username, \
                   "Ensure that this user exists in '%s'" % self.__authfile )
         if pw == "":
             self.debug( "Blank %s password" % username.lower() )
-            raise Errors.AuthError, \
-                ( "User %s is denied login" % username, \
+            raise Errors.AuthError( "User %s is denied login" % username, \
                   "Blank password in file '%s'" % self.__authfile )
         self.debug( "Comparing encrypted password." )
         retval = crypt.crypt(password, pw[:2]) == pw
@@ -390,7 +386,7 @@ class Auth(Util.Debugable):
         try:
             authResult = not self.__pipefd3( self.__authprog, \
                                              '%s\0%s\0' % (username, password) )
-        except Exception, err:
+        except Exception as err:
             self.debug( "pipefd3 failed (%s: %s).\n" % (err.__class__, err) + \
                    "Falling back to /bin/sh redirection" )
             cmd = "/bin/sh -c 'exec %s 3<&0'" % self.__authprog
@@ -430,11 +426,11 @@ class Auth(Util.Debugable):
                 retVal = ( type == 'OK' )
                 M.logout()
                 return retVal
-            except imaplib.IMAP4.error, err:
+            except imaplib.IMAP4.error as err:
                 self.debug( "imap authentication for %s@%s failed" % \
                       (username, self.__authremote['host']) )
                 return 0
-            except Exception, err:
+            except Exception as err:
                 self.debug( "Uncaught %s: %s" % (err.__class__, err) )
                 return 0
         elif self.__authremote['proto'] == 'imaps':
@@ -447,7 +443,7 @@ class Auth(Util.Debugable):
                 retVal = ( type == 'OK' )
                 M.logout()
                 return retVal
-            except Exception, err:
+            except Exception as err:
                 self.debug( "imap authentication for %s@%s failed" % \
                       (username, self.__authremote['host']) )
                 return 0
@@ -465,7 +461,7 @@ class Auth(Util.Debugable):
                     M.apop(username, password)
                     M.quit()
                     return 1
-            except poplib.error_proto, err:
+            except poplib.error_proto as err:
                 self.debug( "%s authentication for %s@%s failed: %s" % \
                       (self.__authremote['proto'], username, \
                        self.__authremote['host'], err) )
@@ -499,7 +495,7 @@ class Auth(Util.Debugable):
             try:
                 os.close(3)
                 os.dup2(fd3read,3)
-            except Exception, err:
+            except Exception as err:
                 self.debug( "Pipefd3: %s (%s)" % (err.__class__, err) )
                 raise err
         self.debug( "Successful pipe()." )
@@ -511,7 +507,7 @@ class Auth(Util.Debugable):
             try:
                 # Exec the program
                 os.execvp(command.split()[0], command.split())
-            except Exception, err:
+            except Exception as err:
                 self.debug( "Pipefd3: Execvp %s (%s)" % (err.__class__, err) )
                 os._exit(200)
         # *** Parent ***
@@ -533,8 +529,8 @@ class Auth(Util.Debugable):
     def __pipecmd(self, command, *strings):
         """Execs a command and pipes strings into stdin
         Returns the errorcode"""
-        popen2._cleanup()
-        cmd = popen2.Popen3(command, 1, bufsize=-1)
+        popen._cleanup()
+        cmd = popen.Popen3(command, 1, bufsize=-1)
         cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
         if strings:
             # Write to the tochild file object.
@@ -556,7 +552,7 @@ class Auth(Util.Debugable):
         dictionary containing username:password pairs.  Username is
         returned in lowercase."""
         authdict = {}
-        fp = file(authfile, 'r')
+        fp = open(authfile, 'r')
         for line in fp:
             line = line.strip()
             if line == '':
@@ -572,7 +568,7 @@ class Auth(Util.Debugable):
         containing IP1 -> IP2:port hashes."""
         ipauthmap = {}
         try:
-            fp = file(ipfile, 'r')
+            fp = open(ipfile, 'r')
             for line in fp:
                 line = line.strip()
                 if line == "":

@@ -51,6 +51,9 @@ class Variable:
 
 escapes = (('&', '&amp;'), ('<', '&lt;'), ('>', '&gt;'))
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
 def escape(text):
     for char, entity in escapes:
         text = text.replace(char, entity)
@@ -91,15 +94,15 @@ def is_next_line_listitem(idx, section):
 
 def print_index(variables):
     column = 0
-    print '<table width="100%">\n'
+    print ('<table width="100%">\n')
     for variable in variables:
         if column % 2 == 0:
-            print '<tr>'
-        print '<td><a href="#%s">%s</a></td>' % (variable.name, variable.name)
+            print ('<tr>')
+        print ('<td><a href="#%s">%s</a></td>' % (variable.name, variable.name))
         column += 1
         if column % 2 == 0:
-            print '</tr>'
-    print '</table>\n'
+            print ('</tr>')
+    print ('</table>\n')
 
 def read_section(fp):
     name = ''
@@ -201,10 +204,10 @@ def main(fp):
 
     variables.sort()
     print_index(variables)
-    print '<dl>'
+    print ('<dl>')
     for variable in variables:
-        print variable.as_string()
-    print '</dl>'
+        print (variable.as_string())
+    print ('</dl>')
 
 
 
@@ -234,7 +237,7 @@ if __name__ == "__main__":
 
     try:
         (options, arguments) = getopt.getopt(sys.argv[1:], 'c', 'css')
-    except getopt.error, msg:
+    except getopt.error as msg:
         usage(1, msg)
 
     for option, value in options:

@@ -14,8 +14,8 @@ BuildArchitectures: noarch
 Vendor: TMDA Cabal
 Packager: tmda-workers@tmda.net
 Url: http://tmda.net/
-BuildRequires: /usr/bin/python2.3
-Requires: /usr/bin/python2.3
+BuildRequires: /usr/bin/python3
+Requires: /usr/bin/python3
 
 %description
 TMDA is an open source anti-spam system and local mail delivery agent.
@@ -25,8 +25,8 @@ TMDA is an open source anti-spam system and local mail delivery agent.
 
 %build
 rm -rf %{buildroot}
-#%define pypath %(if [ `type -p python2` ]; then type -p python2; else type -p python; fi)
-%define pypath /usr/bin/python2.3
+#%define pypath %(if [ `type -p python3` ]; then type -p python3; else type -p python; fi)
+%define pypath /usr/bin/python3
 
 # fix shbang line in all executable files
 find . -type f -perm 0755 -print | while read i

@@ -22,14 +22,15 @@
 """General purpose functions."""
 
 
-from cStringIO import StringIO
-import cPickle
+
+from io import StringIO
+import pickle
 import email
 import email.utils
 import fileinput
 import fnmatch
 import os
-import popen2
+import popen
 import re
 import socket
 import stat
@@ -38,12 +39,12 @@ import tempfile
 import textwrap
 import time
 
-import Errors
+from . import Errors
 
 
-MODE_EXEC = 01
-MODE_READ = 04
-MODE_WRITE = 02
+MODE_EXEC = 0o1
+MODE_READ = 0o4
+MODE_WRITE = 0o2
 POSIX_NAME_MAX = 255                    # maximum length of a file name
 
 
@@ -219,7 +220,7 @@ def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
     match = re.match("^([0-9]+)([YMwdhms])$", timeout)
     if not match:
-        raise ValueError, 'Invalid timeout value: ' + timeout
+        raise ValueError('Invalid timeout value: ' + timeout)
     (num, unit) = match.groups()
     if unit == 'Y':                     # years --> seconds
         seconds = int(num) * 60 * 60 * 24 * 365
@@ -244,7 +245,7 @@ def format_timeout(timeout):
     if not match:
         return timeout
     (num, unit) = match.groups()
-    import Defaults
+    from . import Defaults
     timeout = num + " " + Defaults.TIMEOUT_UNITS[unit]
     if int(num) == 1:
         timeout = timeout[:-1]
@@ -280,7 +281,7 @@ def make_msgid(timesecs=None, pid=None):
     if not timesecs:
         timesecs = time.time()
     if not pid:
-        import Defaults
+        from . import Defaults
         pid = Defaults.PID
     idhost = os.environ.get('TMDAIDHOST') or \
              os.environ.get('QMAILIDHOST') or \
@@ -348,8 +349,8 @@ def pipecmd(command, *strings):
     General Public License version 2.
     """
     try:
-        popen2._cleanup()
-        cmd = popen2.Popen3(command, 1, bufsize=-1)
+        popen._cleanup()
+        cmd = popen.Popen3(command, 1, bufsize=-1)
         cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
         if strings:
             # Write to the tochild file object.
@@ -378,23 +379,22 @@ def pipecmd(command, *strings):
                 # Stopped, etc.
                 exitcode = 'no exit?'
                 exitsignal = ''
-            raise IOError, 'command "%s" %s %s (%s)' \
-                  % (command, exitcode, exitsignal, err or '')
+            raise IOError('command "%s" %s %s (%s)' \
+                  % (command, exitcode, exitsignal, err or ''))
         elif err:
             # command wrote something to stderr.
-            print err
+            print (err)
         if out:
             # command wrote something to stdout.
-            print out
-    except Exception, txt:
-        raise IOError, \
-              'failure delivering message to command "%s" (%s)' % (command, txt)
+            print (out)
+    except Exception as txt:
+        raise IOError('failure delivering message to command "%s" (%s)' % (command, txt))
 
 
 def writefile(contents, fullpathname):
     """Simple function to write contents to a file."""
     if os.path.exists(fullpathname):
-        raise IOError, fullpathname + ' already exists'
+        raise IOError(fullpathname + ' already exists')
     else:
         file = open(fullpathname, 'w')
         file.write(contents)
@@ -427,7 +427,7 @@ def pager(str):
         # try to locate less or more if $PAGER is not set
         for prog in ('less', 'more'):
             path = os.popen('which ' + prog).read()
-            if path <> '':
+            if path != '':
                 pager = path
                 break
     try:
@@ -466,7 +466,7 @@ def confirm_append_address(xp, rp):
         return rp
     if '@' not in rp or '@' not in xp:
         return rp
-    import Defaults
+    from . import Defaults
     rpl = rp.lower()
     xpl = xp.lower()
     rplocal, rphost = rpl.split('@', 1)
@@ -563,7 +563,7 @@ def sendmail(msgstr, envrecip, envsender):
 
     envsender is the envelope sender address.
     """
-    import Defaults
+    from . import Defaults
     # Sending mail with a null envelope sender address <> is not done
     # the same way across the different supported MTAs, nor across the
     # two mail transports (SMTP and /usr/sbin/sendmail).
@@ -587,7 +587,7 @@ def sendmail(msgstr, envrecip, envsender):
     if Defaults.MAIL_TRANSPORT == 'sendmail':
         # You can avoid the shell by passing a tuple of arguments as
         # the command instead of a string.  This will cause the
-        # popen2.Popen3() code to execvp() "/usr/bin/sendmail" with
+        # popen.Popen3() code to execvp() "/usr/bin/sendmail" with
         # these arguments exactly, with no trip through any shell.
         cmd = (Defaults.SENDMAIL_PROGRAM, '-i',
                '-f', envsender, '--', envrecip)
@@ -598,8 +598,7 @@ def sendmail(msgstr, envrecip, envsender):
         server.sendmail(envsender, envrecip, msgstr)
         server.quit()
     else:
-        raise Errors.ConfigError, \
-              "Invalid MAIL_TRANSPORT method: " + Defaults.MAIL_TRANSPORT
+        raise Errors.ConfigError("Invalid MAIL_TRANSPORT method: " + Defaults.MAIL_TRANSPORT)
 
 
 def decode_header(str):
@@ -665,7 +664,7 @@ def rename_headers(msg, old, new):
 
     new is the new name of the header
     """
-    if msg.has_key(old):
+    if old in msg:
         for pair in msg._headers:
             if pair[0].lower() == old.lower():
                 index = msg._headers.index(pair)
@@ -701,12 +700,12 @@ def purge_headers(msg, headers):
 
 def build_cdb(filename):
     """Build a cdb file from a text file."""
-    import cdb
+    import pycdb
     try:
         cdbname = filename + '.cdb'
         tempfile.tempdir = os.path.dirname(filename)
         tmpname = os.path.split(tempfile.mktemp())[1]
-        cdb = cdb.cdbmake(cdbname, cdbname + '.' + tmpname)
+        cdb = pycdb.CDBMake(cdbname, cdbname + '.' + tmpname)
         for line in file_to_list(filename):
             linef = line.split()
             key = linef[0].lower()
@@ -724,14 +723,14 @@ def build_cdb(filename):
 
 def build_dbm(filename):
     """Build a DBM file from a text file."""
-    import anydbm
+    import dbm
     import glob
     try:
         dbmpath, dbmname = os.path.split(filename)
         dbmname += '.db'
         tempfile.tempdir = dbmpath
         tmpname = tempfile.mktemp()
-        dbm = anydbm.open(tmpname, 'n')
+        dbm = dbm.open(tmpname, 'n')
         for line in file_to_list(filename):
             linef = line.split()
             key = linef[0].lower()
@@ -773,7 +772,7 @@ def pickleit(object, file, proto=2):
     tempfile.tempdir = os.path.dirname(file)
     tmpname = tempfile.mkstemp()[1]
     fp = open(tmpname, 'w')
-    cPickle.dump(object, fp, proto)
+    pickle.dump(object, fp, proto)
     fp.close()
     os.rename(tmpname, file)
     return
@@ -782,7 +781,7 @@ def pickleit(object, file, proto=2):
 def unpickle(file):
     """Retrieve and return object from file."""
     fp = open(file, 'r')
-    object = cPickle.load(fp)
+    object = pickle.load(fp)
     fp.close()
     return object
 
@@ -868,7 +867,7 @@ def maketext(templatefile, vardict):
     Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.,
     and licensed under the GNU General Public License version 2.
     """
-    import Defaults
+    from . import Defaults
     foundit = None
     if (templatefile[0] == '/' or templatefile[0] == '~'):
         if templatefile[0] == '~':
@@ -921,7 +920,7 @@ def maketext(templatefile, vardict):
                     foundit = filename
                     break
     if foundit is None:
-        raise IOError, "Can't find " + templatefile
+        raise IOError("Can't find " + templatefile)
     else:
         fp = open(foundit, 'r')
         template = fp.read()
@@ -934,24 +933,24 @@ def maketext(templatefile, vardict):
 
 def filter_match(filename, recip, sender=None):
     """Check if the give e-mail addresses match lines in filename."""
-    import Defaults
-    import FilterParser
+    from . import Defaults
+    from . import FilterParser
     filter = FilterParser.FilterParser(Defaults.DB_CONNECTION)
     filter.read(filename)
     (actions, matchline) = filter.firstmatch(recip, [sender])
     # print the results
     checking_msg = 'Checking ' + filename
-    print checking_msg
-    print '-' * len(checking_msg)
+    print (checking_msg)
+    print ('-' * len(checking_msg))
     if recip:
-        print 'To:',recip
+        print ('To:',recip)
     if sender:
-        print 'From:',sender
-    print '-' * len(checking_msg)
+        print ('From:',sender)
+    print ('-' * len(checking_msg))
     if actions:
-        print 'MATCH:', matchline
+        print ('MATCH:', matchline)
     else:
-        print 'Sorry, no matching lines.'
+        print ('Sorry, no matching lines.')
 
 
 def CanRead( file, uid = None, gid = None, raiseError = 1 ):
@@ -988,22 +987,22 @@ def CanMode( file, mode = MODE_READ, uid = None, gid = None ):
     try:
         fstat = os.stat( file )
     except:
-        raise IOError, "'%s' does not exist" % file
+        raise IOError("'%s' does not exist" % file)
     if uid is None:
         uid = os.geteuid()
     if gid is None:
         gid = os.getegid()
     needuid = fstat[4]
     needgid = fstat[5]
-    filemod = fstat[0] & 0777
+    filemod = fstat[0] & 0o777
     if uid == 0:
         # Root always wins.
         return 1
     elif filemod & mode:
         return 1
-    elif filemod & ( mode * 010 ) and needgid == gid:
+    elif filemod & (mode * 0o10) and needgid == gid:
         return 1
-    elif filemod & ( mode * 0100 ) and needuid == uid:
+    elif filemod & (mode * 0o100) and needuid == uid:
         return 1
     else:
         return 0
@@ -1040,9 +1039,9 @@ class Debugable:
         if self.level >= level:
             print >> self.DEBUGSTREAM, msg
 
-    def set_debug(level = 1):
+    def set_debug(self, level = 1):
         self.level = level
 
-    def set_nodebug():
+    def set_nodebug(self):
         self.level = 0
 
