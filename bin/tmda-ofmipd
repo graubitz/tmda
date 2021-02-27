@@ -35,7 +35,7 @@ import base64
 import hmac
 import imaplib
 import hashlib
-import popen
+from subprocess import Popen
 import poplib
 import random
 import time
@@ -618,8 +618,8 @@ def warning(msg='', exit=1):
 
 
 def pipecmd(command, *strings):
-    popen._cleanup()
-    cmd = popen.Popen3(command, 1, bufsize=-1)
+    Popen._cleanup()
+    cmd = Popen.Popen3(command, 1, bufsize=-1)
     cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
     if strings:
         # Write to the tochild file object.

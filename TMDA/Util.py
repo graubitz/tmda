@@ -30,7 +30,7 @@ import email.utils
 import fileinput
 import fnmatch
 import os
-import popen
+from subprocess import Popen
 import re
 import socket
 import stat
@@ -120,7 +120,7 @@ def getfilemode(path):
     permissions on path."""
     statinfo = os.stat(path)
     permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
-    mode = int(oct(permbits))
+    mode = oct(permbits)
     return mode
 
 
@@ -177,7 +177,7 @@ def getvdomainprepend(address, vdomainsfile):
 def getvuserhomedir(user, domain, script):
     """Return the home directory of a qmail virtual domain user."""
     cmd = "%s %s %s" % (script, user, domain)
-    fpin = os.popen(cmd)
+    fpin = os.Popen(cmd)
     vuserhomedir = fpin.read()
     fpin.close()
     return vuserhomedir.strip()
@@ -349,8 +349,8 @@ def pipecmd(command, *strings):
     General Public License version 2.
     """
     try:
-        popen._cleanup()
-        cmd = popen.Popen3(command, 1, bufsize=-1)
+        Popen._cleanup()
+        cmd = Popen.Popen3(command, 1, bufsize=-1)
         cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
         if strings:
             # Write to the tochild file object.
@@ -426,12 +426,12 @@ def pager(str):
     if pager is None:
         # try to locate less or more if $PAGER is not set
         for prog in ('less', 'more'):
-            path = os.popen('which ' + prog).read()
+            path = os.Popen('which ' + prog).read()
             if path != '':
                 pager = path
                 break
     try:
-        os.popen(pager, 'w').write(str)
+        os.Popen(pager, 'w').write(str)
     except IOError:
         return
 
@@ -587,7 +587,7 @@ def sendmail(msgstr, envrecip, envsender):
     if Defaults.MAIL_TRANSPORT == 'sendmail':
         # You can avoid the shell by passing a tuple of arguments as
         # the command instead of a string.  This will cause the
-        # popen.Popen3() code to execvp() "/usr/bin/sendmail" with
+        # Popen.Popen3() code to execvp() "/usr/bin/sendmail" with
         # these arguments exactly, with no trip through any shell.
         cmd = (Defaults.SENDMAIL_PROGRAM, '-i',
                '-f', envsender, '--', envrecip)

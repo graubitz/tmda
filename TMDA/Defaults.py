@@ -82,7 +82,7 @@ if not GLOBAL_TMDARC:
 _tmdarc = os.environ.get('TMDARC')
 if _tmdarc:
     TMDARC = _tmdarc
-elif 'TMDARC' not in vars:
+elif 'TMDARC' not in vars():
     TMDARC = os.path.join(HOMEDIR, '.tmda', 'config')
 
 # CONFIG_EXEC
@@ -90,7 +90,7 @@ elif 'TMDARC' not in vars:
 # using ConfigParser, otherwise it will evaluated as a sequence of
 # Python statements using exec(open(()).
 # Default is True (use exec(open())
-if 'CONFIG_EXEC' not in vars:
+if 'CONFIG_EXEC' not in vars():
     CONFIG_EXEC = True
 
 # Read-in the user's configuration file.
@@ -137,14 +137,14 @@ TMDA_VERSION = Version.TMDA
 # DATADIR = "~/.tmda"
 #
 # Default is ~/.tmda
-if 'DATADIR' not in vars:
+if 'DATADIR' not in vars():
     DATADIR = os.path.join(HOMEDIR, '.tmda')
 
 # MAIL_TRANSFER_AGENT
 # Defines which mail transfer agent (MTA) software you are running.
 # Possible choices are "exim", "postfix", "qmail", or "sendmail".
 # Default is qmail
-if 'MAIL_TRANSFER_AGENT' not in vars:
+if 'MAIL_TRANSFER_AGENT' not in vars():
     MAIL_TRANSFER_AGENT = "qmail"
 
 # DELIVERY
@@ -171,7 +171,7 @@ if 'MAIL_TRANSFER_AGENT' not in vars:
 # DELIVERY = "me@new.job.com"
 #
 # No default for non-qmail users.
-if 'DELIVERY'not in vars:
+if 'DELIVERY'not in vars():
     if MAIL_TRANSFER_AGENT == 'qmail':
         DELIVERY = "_qok_"
     else:
@@ -185,14 +185,14 @@ if 'DELIVERY'not in vars:
 # friends is likely `+'. The default for MMDF is '='.
 #
 # Default is "-"
-if 'RECIPIENT_DELIMITER' not in vars:
+if 'RECIPIENT_DELIMITER' not in vars():
     RECIPIENT_DELIMITER = "-"
 
 # ALLOW_MODE_640
 # Set this variable to True if you want to allow a mode 640 CRYPT_KEY_FILE.
 #
 # Default is False (turned off)
-if 'ALLOW_MODE_640' not in vars:
+if 'ALLOW_MODE_640' not in vars():
     ALLOW_MODE_640 = False
 
 # MAIL_TRANSPORT
@@ -209,7 +209,7 @@ if 'ALLOW_MODE_640' not in vars:
 #    program (e.g, /usr/sbin/sendmail).
 #
 # Default is "sendmail"
-if 'MAIL_TRANSPORT' not in vars:
+if 'MAIL_TRANSPORT' not in vars():
     MAIL_TRANSPORT = "sendmail"
 
 # SMTPHOST
@@ -227,7 +227,7 @@ if 'MAIL_TRANSPORT' not in vars:
 # SMTPHOST = "mailhost.company.com:1234"
 #
 # Default is "localhost" (port 25 on the local host)
-if 'SMTPHOST' not in vars and MAIL_TRANSPORT == 'smtp':
+if 'SMTPHOST' not in vars() and MAIL_TRANSPORT == 'smtp':
     SMTPHOST = "localhost"
 
 # SMTPAUTH_USERNAME
@@ -240,7 +240,7 @@ if 'SMTPHOST' not in vars and MAIL_TRANSPORT == 'smtp':
 # SMTPAUTH_USERNAME = "johndoe"
 #
 # No default.
-if 'SMTPAUTH_USERNAME' not in vars and MAIL_TRANSPORT == 'smtp':
+if 'SMTPAUTH_USERNAME' not in vars() and MAIL_TRANSPORT == 'smtp':
     SMTPAUTH_USERNAME = None
 
 # SMTPAUTH_PASSWORD
@@ -253,7 +253,7 @@ if 'SMTPAUTH_USERNAME' not in vars and MAIL_TRANSPORT == 'smtp':
 # SMTPAUTH_PASSWORD = "6Yu_9iKzs"
 #
 # No default.
-if 'SMTPAUTH_PASSWORD' not in vars and MAIL_TRANSPORT == 'smtp':
+if 'SMTPAUTH_PASSWORD' not in vars() and MAIL_TRANSPORT == 'smtp':
     SMTPAUTH_PASSWORD = None
 
 # SMTPSSL
@@ -263,7 +263,7 @@ if 'SMTPAUTH_PASSWORD' not in vars and MAIL_TRANSPORT == 'smtp':
 # support.
 #
 # Default is False (turned off)
-if 'SMTPSSL' not in vars and MAIL_TRANSPORT == 'smtp':
+if 'SMTPSSL' not in vars() and MAIL_TRANSPORT == 'smtp':
     SMTPSSL = False
 
 # SMTPSSL_KEYFILE
@@ -271,7 +271,7 @@ if 'SMTPSSL' not in vars and MAIL_TRANSPORT == 'smtp':
 # formatted file that contains your private key.
 #
 # No default.
-if 'SMTPSSL_KEYFILE' not in vars and \
+if 'SMTPSSL_KEYFILE' not in vars() and \
        MAIL_TRANSPORT == 'smtp' and SMTPSSL:
     SMTPSSL_KEYFILE = None
 
@@ -281,7 +281,7 @@ if 'SMTPSSL_KEYFILE' not in vars and \
 # certificate verification.
 #
 # No default.
-if 'SMTPSSL_CERTFILE' not in vars and \
+if 'SMTPSSL_CERTFILE' not in vars() and \
        MAIL_TRANSPORT == 'smtp' and SMTPSSL:
     SMTPSSL_CERTFILE = None
 
@@ -294,7 +294,7 @@ if 'SMTPSSL_CERTFILE' not in vars and \
 # after this number of consecutive sessions.
 #
 # Default is 0
-if 'SMTP_MAX_SESSIONS_PER_CONNECTION' not in vars and \
+if 'SMTP_MAX_SESSIONS_PER_CONNECTION' not in vars() and \
        MAIL_TRANSPORT == 'smtp':
     SMTP_MAX_SESSIONS_PER_CONNECTION = 0
 
@@ -304,7 +304,7 @@ if 'SMTP_MAX_SESSIONS_PER_CONNECTION' not in vars and \
 #
 # Defaults to one of the two standard locations (/usr/lib/sendmail,
 # /usr/sbin/sendmail).
-if 'SENDMAIL_PROGRAM' not in vars and MAIL_TRANSPORT == 'sendmail':
+if 'SENDMAIL_PROGRAM' not in vars() and MAIL_TRANSPORT == 'sendmail':
     for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
         if os.path.exists(sendmail):
             SENDMAIL_PROGRAM = sendmail
@@ -316,7 +316,7 @@ if 'SENDMAIL_PROGRAM' not in vars and MAIL_TRANSPORT == 'sendmail':
 # any qmail virtualdomains, but it will improve performance.
 #
 # Default is True (turned on)
-if 'USEVIRTUALDOMAINS' not in vars:
+if 'USEVIRTUALDOMAINS' not in vars():
     USEVIRTUALDOMAINS = True
 
 # VIRTUALDOMAINS
@@ -325,7 +325,7 @@ if 'USEVIRTUALDOMAINS' not in vars:
 # for virtualdomain processing in tmda-filter.
 #
 # Default is /var/qmail/control/virtualdomains
-if 'VIRTUALDOMAINS' not in vars:
+if 'VIRTUALDOMAINS' not in vars():
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
 # BOUNCE_ENV_SENDER
@@ -335,7 +335,7 @@ if 'VIRTUALDOMAINS' not in vars:
 # BOUNCE_ENV_SENDER = "devnull@domain.dom"
 #
 # Default is "<>", a null envelope sender.
-if 'BOUNCE_ENV_SENDER' not in vars:
+if 'BOUNCE_ENV_SENDER' not in vars():
     BOUNCE_ENV_SENDER = '<>'
 
 # BARE_APPEND
@@ -349,7 +349,7 @@ if 'BOUNCE_ENV_SENDER' not in vars:
 # BARE_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
-if 'BARE_APPEND' not in vars:
+if 'BARE_APPEND' not in vars():
     BARE_APPEND = None
 
 # CGI_SETTINGS
@@ -362,7 +362,7 @@ if 'BARE_APPEND' not in vars:
 # CGI_SETTINGS = "~/.tmda/MyCGISettings"
 #
 # Default is "tmda-cgi.ini".
-if 'CGI_SETTINGS' not in vars:
+if 'CGI_SETTINGS' not in vars():
     CGI_SETTINGS = "tmda-cgi.ini"
 
 # CGI_URL
@@ -372,7 +372,7 @@ if 'CGI_SETTINGS' not in vars:
 # CGI_URL = "http://www.domain.dom/cgi-bin/tmda.cgi"
 #
 # No default.
-if 'CGI_URL' not in vars:
+if 'CGI_URL' not in vars():
     CGI_URL = None
 
 # CGI_VIRTUALUSER
@@ -380,7 +380,7 @@ if 'CGI_URL' not in vars:
 # user" support (http://tmda.net/tmda-cgi/virtual.html).
 #
 # Default is False (disabled)
-if 'CGI_VIRTUALUSER' not in vars:
+if 'CGI_VIRTUALUSER' not in vars():
     CGI_VIRTUALUSER = False
 
 # CONFIRM_ADDRESS
@@ -394,7 +394,7 @@ if 'CGI_VIRTUALUSER' not in vars:
 # CONFIRM_ADDRESS = "webmaster@domain.dom"
 #
 # No default
-if 'CONFIRM_ADDRESS' not in vars:
+if 'CONFIRM_ADDRESS' not in vars():
     CONFIRM_ADDRESS = None
 
 # CONFIRM_APPEND
@@ -408,7 +408,7 @@ if 'CONFIRM_ADDRESS' not in vars:
 # CONFIRM_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
-if 'CONFIRM_APPEND' not in vars:
+if 'CONFIRM_APPEND' not in vars():
     CONFIRM_APPEND = None
     
 # CONFIRM_CC
@@ -419,7 +419,7 @@ if 'CONFIRM_APPEND' not in vars:
 # CONFIRM_CC = "jdoe-confirms@domain.dom"
 #
 # No default.
-if 'CONFIRM_CC' not in vars:
+if 'CONFIRM_CC' not in vars():
     CONFIRM_CC = None
 
 # CONFIRM_ACCEPT_NOTIFY
@@ -429,7 +429,7 @@ if 'CONFIRM_CC' not in vars:
 # content is based on the confirm_accept.txt template.
 #
 # Default is True (turned on)
-if 'CONFIRM_ACCEPT_NOTIFY' not in vars:
+if 'CONFIRM_ACCEPT_NOTIFY' not in vars():
     CONFIRM_ACCEPT_NOTIFY = True
 
 # CONFIRM_ACCEPT_CC
@@ -440,7 +440,7 @@ if 'CONFIRM_ACCEPT_NOTIFY' not in vars:
 # CONFIRM_ACCEPT_CC = "jdoe-confirm-replies@domain.dom"
 #
 # No default.
-if 'CONFIRM_ACCEPT_CC' not in vars:
+if 'CONFIRM_ACCEPT_CC' not in vars():
     CONFIRM_ACCEPT_CC = None
 
 # CONFIRM_MAX_MESSAGE_SIZE
@@ -449,7 +449,7 @@ if 'CONFIRM_ACCEPT_CC' not in vars:
 # notice.  Set this to None to allow any size message.
 #
 # Default is 50000
-if 'CONFIRM_MAX_MESSAGE_SIZE' not in vars:
+if 'CONFIRM_MAX_MESSAGE_SIZE' not in vars():
     CONFIRM_MAX_MESSAGE_SIZE = 50000
 
 # TEMPLATE_DIR
@@ -463,7 +463,7 @@ if 'CONFIRM_MAX_MESSAGE_SIZE' not in vars:
 # TEMPLATE_DIR = "~/.tmda/templates/"
 #
 # No default.
-if 'TEMPLATE_DIR' not in vars:
+if 'TEMPLATE_DIR' not in vars():
     TEMPLATE_DIR = None
 
 # TEMPLATE_DIR_MATCH_RECIPIENT
@@ -497,7 +497,7 @@ if 'TEMPLATE_DIR' not in vars:
 #
 # Default is False (turned off)
 
-if 'TEMPLATE_DIR_MATCH_RECIPIENT' not in vars:
+if 'TEMPLATE_DIR_MATCH_RECIPIENT' not in vars():
     TEMPLATE_DIR_MATCH_RECIPIENT = False
 
 # TEMPLATE_DIR_MATCH_SENDER
@@ -523,7 +523,7 @@ if 'TEMPLATE_DIR_MATCH_RECIPIENT' not in vars:
 # then the default locations will be tried.
 #
 # Default is False (turned off)
-if 'TEMPLATE_DIR_MATCH_SENDER' not in vars:
+if 'TEMPLATE_DIR_MATCH_SENDER' not in vars():
     TEMPLATE_DIR_MATCH_SENDER = False
 
 # TEMPLATE_EMAIL_HEADERS
@@ -536,7 +536,7 @@ if 'TEMPLATE_DIR_MATCH_SENDER' not in vars:
 # TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]
 #
 # Default is "From:" and "Reply-To:".
-if 'TEMPLATE_EMAIL_HEADERS' not in vars:
+if 'TEMPLATE_EMAIL_HEADERS' not in vars():
     TEMPLATE_EMAIL_HEADERS = ['from', 'reply-to']
 
 # TEMPLATE_ENCODED_HEADERS
@@ -548,7 +548,7 @@ if 'TEMPLATE_EMAIL_HEADERS' not in vars:
 # TEMPLATE_ENCODED_HEADERS = ["subject"]
 #
 # Default is "Subject:".
-if 'TEMPLATE_ENCODED_HEADERS' not in vars:
+if 'TEMPLATE_ENCODED_HEADERS' not in vars():
     TEMPLATE_ENCODED_HEADERS = ['subject']
 
 # DATED_TEMPLATE_VARS
@@ -556,7 +556,7 @@ if 'TEMPLATE_ENCODED_HEADERS' not in vars:
 # in your templates.
 #
 # Default is False (turned off)
-if 'DATED_TEMPLATE_VARS' not in vars:
+if 'DATED_TEMPLATE_VARS' not in vars():
     DATED_TEMPLATE_VARS = False
 
 # SENDER_TEMPLATE_VARS
@@ -564,7 +564,7 @@ if 'DATED_TEMPLATE_VARS' not in vars:
 # in your templates.
 #
 # Default is False (turned off)
-if 'SENDER_TEMPLATE_VARS' not in vars:
+if 'SENDER_TEMPLATE_VARS' not in vars():
     SENDER_TEMPLATE_VARS = False
 
 # FILTER_INCOMING
@@ -575,7 +575,7 @@ if 'SENDER_TEMPLATE_VARS' not in vars:
 env_FILTER_INCOMING = os.environ.get('TMDA_FILTER_INCOMING')
 if env_FILTER_INCOMING:
     FILTER_INCOMING = env_FILTER_INCOMING
-elif 'FILTER_INCOMING' not in vars:
+elif 'FILTER_INCOMING' not in vars():
     FILTER_INCOMING = os.path.join(DATADIR, 'filters', 'incoming')
 
 # FILTER_OUTGOING
@@ -597,7 +597,7 @@ elif 'FILTER_OUTGOING' not in vars():
 # FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"
 #
 # No default.
-if 'FILTER_BOUNCE_CC' not in vars:
+if 'FILTER_BOUNCE_CC' not in vars():
     FILTER_BOUNCE_CC = None
 
 # FILTER_DROP_CC
@@ -608,7 +608,7 @@ if 'FILTER_BOUNCE_CC' not in vars:
 # FILTER_DROP_CC = "jdoe-drops@domain.dom"
 #
 # No default.
-if 'FILTER_DROP_CC' not in vars:
+if 'FILTER_DROP_CC' not in vars():
     FILTER_DROP_CC = None
 
 # ACTION_HEADER_INCOMING
@@ -622,7 +622,7 @@ if 'FILTER_DROP_CC' not in vars:
 # the DELIVERY variable.
 #
 # Default is False (turned off)
-if 'ACTION_HEADER_INCOMING' not in vars:
+if 'ACTION_HEADER_INCOMING' not in vars():
     ACTION_HEADER_INCOMING = False
 
 # ACTION_INCOMING
@@ -643,7 +643,7 @@ if 'ACTION_HEADER_INCOMING' not in vars:
 #    silently hold message in pending queue
 #
 # Default is confirm
-if 'ACTION_INCOMING' not in vars:
+if 'ACTION_INCOMING' not in vars():
     ACTION_INCOMING = "confirm"
 
 # ACTION_FAIL_DATED
@@ -663,7 +663,7 @@ if 'ACTION_INCOMING' not in vars:
 #    silently hold message in pending queue
 #
 # Default is confirm
-if 'ACTION_FAIL_DATED' not in vars:
+if 'ACTION_FAIL_DATED' not in vars():
     ACTION_FAIL_DATED = "confirm"
 
 # ACTION_EXPIRED_DATED
@@ -695,7 +695,7 @@ if 'ACTION_FAIL_DATED' not in vars:
 #     '1Y':     'drop'}    # ...it expired more than 1Y ago, then drop
 # 
 # Default is "confirm"
-if 'ACTION_EXPIRED_DATED' not in vars:
+if 'ACTION_EXPIRED_DATED' not in vars():
     ACTION_EXPIRED_DATED = "confirm"
 
 # ACTION_FAIL_SENDER
@@ -716,7 +716,7 @@ if 'ACTION_EXPIRED_DATED' not in vars:
 #    silently hold message in pending queue
 #
 # Default is confirm
-if 'ACTION_FAIL_SENDER' not in vars:
+if 'ACTION_FAIL_SENDER' not in vars():
     ACTION_FAIL_SENDER = "confirm"
 
 # ACTION_FAIL_KEYWORD
@@ -736,7 +736,7 @@ if 'ACTION_FAIL_SENDER' not in vars:
 #    silently hold message in pending queue
 #
 # Default is confirm
-if 'ACTION_FAIL_KEYWORD' not in vars:
+if 'ACTION_FAIL_KEYWORD' not in vars():
     ACTION_FAIL_KEYWORD = "confirm"
 
 # ACTION_INVALID_CONFIRMATION
@@ -756,7 +756,7 @@ if 'ACTION_FAIL_KEYWORD' not in vars:
 #    silently hold message in pending queue
 #
 # Default is bounce
-if 'ACTION_INVALID_CONFIRMATION' not in vars:
+if 'ACTION_INVALID_CONFIRMATION' not in vars():
     ACTION_INVALID_CONFIRMATION = "bounce"
 
 # ACTION_MISSING_PENDING
@@ -779,7 +779,7 @@ if 'ACTION_INVALID_CONFIRMATION' not in vars:
 #    silently hold message in pending queue
 #
 # Default is bounce
-if 'ACTION_MISSING_PENDING' not in vars:
+if 'ACTION_MISSING_PENDING' not in vars():
     ACTION_MISSING_PENDING = "bounce"
 
 # ACTION_OUTGOING
@@ -803,7 +803,7 @@ if 'ACTION_MISSING_PENDING' not in vars:
 #    tag with a keyword address
 #
 # Default is dated
-if 'ACTION_OUTGOING' not in vars:
+if 'ACTION_OUTGOING' not in vars():
     ACTION_OUTGOING = "dated"
 
 # FINGERPRINT
@@ -848,7 +848,7 @@ if 'ACTION_OUTGOING' not in vars:
 # X-TMDA-Fingerprint: vDBoOHtIUE6VniJguxJ+w2fR5bU
 #
 # No default
-if 'FINGERPRINT' not in vars:
+if 'FINGERPRINT' not in vars():
     FINGERPRINT = None
     
 # FULLNAME
@@ -858,7 +858,7 @@ if 'FINGERPRINT' not in vars:
 # FULLNAME = "John Doe"
 #
 # Default comes from your environment or the password file.
-if 'FULLNAME' not in vars:
+if 'FULLNAME' not in vars():
     FULLNAME = Util.getfullname()
 
 # HMAC_BYTES
@@ -867,7 +867,7 @@ if 'FULLNAME' not in vars:
 # this value will will invalidate all previously generated HMACs.
 #
 # Default is 3 (24-bit HMACs)
-if 'HMAC_BYTES' not in vars:
+if 'HMAC_BYTES' not in vars():
     HMAC_BYTES = 3
 
 # HOSTNAME
@@ -878,7 +878,7 @@ if 'HMAC_BYTES' not in vars:
 # HOSTNAME = "domain.dom"
 #
 # Defaults to the fully qualified domain name of the localhost.
-if 'HOSTNAME' not in vars:
+if 'HOSTNAME' not in vars():
     HOSTNAME = Util.gethostname()
     
 # LOGFILE_DEBUG
@@ -890,7 +890,7 @@ if 'HOSTNAME' not in vars:
 # LOGFILE_DEBUG = "~/.tmda/logs/debug"
 #
 # No default.
-if 'LOGFILE_DEBUG' not in vars:
+if 'LOGFILE_DEBUG' not in vars():
     LOGFILE_DEBUG = None
     
 # LOGFILE_INCOMING
@@ -903,7 +903,7 @@ if 'LOGFILE_DEBUG' not in vars:
 # LOGFILE_INCOMING = "~/.tmda/logs/incoming"
 #
 # No default.
-if 'LOGFILE_INCOMING' not in vars:
+if 'LOGFILE_INCOMING' not in vars():
     LOGFILE_INCOMING = None
 
 # LOGFILE_OUTGOING
@@ -916,7 +916,7 @@ if 'LOGFILE_INCOMING' not in vars:
 # LOGFILE_OUTGOING = "~/.tmda/logs/outgoing"
 #
 # No default.
-if 'LOGFILE_OUTGOING' not in vars:
+if 'LOGFILE_OUTGOING' not in vars():
     LOGFILE_OUTGOING = None
 
 # MESSAGE_FROM_STYLE
@@ -931,7 +931,7 @@ if 'LOGFILE_OUTGOING' not in vars:
 #      Elvis Parsley <king@grassland.com>
 #
 # Default is "angles".
-if 'MESSAGE_FROM_STYLE' not in vars:
+if 'MESSAGE_FROM_STYLE' not in vars():
     MESSAGE_FROM_STYLE = 'angles'
 
 # MESSAGE_TAG_HEADER_STYLE
@@ -942,7 +942,7 @@ if 'MESSAGE_FROM_STYLE' not in vars:
 #
 # The valid values and default value is identical to that of
 # MESSAGE_FROM_STYLE.
-if 'MESSAGE_TAG_HEADER_STYLE' not in vars:
+if 'MESSAGE_TAG_HEADER_STYLE' not in vars():
     MESSAGE_TAG_HEADER_STYLE = 'angles'
 
 # MAX_AUTORESPONSES_PER_DAY
@@ -958,7 +958,7 @@ if 'MESSAGE_TAG_HEADER_STYLE' not in vars:
 # high.  Set to 0 for no limit.
 #
 # Default is 50
-if 'MAX_AUTORESPONSES_PER_DAY' not in vars:
+if 'MAX_AUTORESPONSES_PER_DAY' not in vars():
     MAX_AUTORESPONSES_PER_DAY = 50
 
 # RESPONSE_DIR
@@ -966,7 +966,7 @@ if 'MAX_AUTORESPONSES_PER_DAY' not in vars:
 # information.  Only consulted if MAX_AUTORESPONSES_PER_DAY != 0
 #
 # Default is ~/.tmda/responses
-if 'RESPONSE_DIR' not in vars and MAX_AUTORESPONSES_PER_DAY != 0:
+if 'RESPONSE_DIR' not in vars() and MAX_AUTORESPONSES_PER_DAY != 0:
     RESPONSE_DIR = os.path.join(DATADIR, 'responses')
 
 # AUTORESPONSE_INCLUDE_SENDER_COPY
@@ -983,7 +983,7 @@ if 'RESPONSE_DIR' not in vars and MAX_AUTORESPONSES_PER_DAY != 0:
 # when sending it.
 #
 # Default is 2
-if 'AUTORESPONSE_INCLUDE_SENDER_COPY' not in vars:
+if 'AUTORESPONSE_INCLUDE_SENDER_COPY' not in vars():
     AUTORESPONSE_INCLUDE_SENDER_COPY = 2
 
 # DB_CONNECTION
@@ -997,7 +997,7 @@ if 'AUTORESPONSE_INCLUDE_SENDER_COPY' not in vars:
 # DB_CONNECTION = MySQLdb.connect("...")
 #
 # Default is None
-if 'DB_CONNECTION' not in vars:
+if 'DB_CONNECTION' not in vars():
     DB_CONNECTION = None
 
 # DB_CONFIRM_APPEND
@@ -1026,7 +1026,7 @@ if 'DB_CONNECTION' not in vars:
 #        WHERE users.email = %(recipient)s"""
 #
 # Default is None
-if 'DB_CONFIRM_APPEND' not in vars:
+if 'DB_CONFIRM_APPEND' not in vars():
     DB_CONFIRM_APPEND = None
 
 # DB_BARE_APPEND
@@ -1050,7 +1050,7 @@ if 'DB_CONFIRM_APPEND' not in vars:
 #       VALUES (%(sender)s, %(recipient)s)"""
 #
 # Default is None
-if 'DB_BARE_APPEND' not in vars:
+if 'DB_BARE_APPEND' not in vars():
     DB_BARE_APPEND = None
 
 # PENDING_DIR
@@ -1060,7 +1060,7 @@ if 'DB_BARE_APPEND' not in vars:
 # first message arrives.
 #
 # Default is ~/.tmda/pending/
-if 'PENDING_DIR' not in vars:
+if 'PENDING_DIR' not in vars():
     PENDING_DIR = os.path.join(DATADIR, 'pending')
 
 # PENDING_QUEUE_FORMAT
@@ -1079,7 +1079,7 @@ if 'PENDING_DIR' not in vars:
 #      more information, see http://wiki.tmda.net/TmdaPendingAsMaildir
 #
 # Default is "original".
-if 'PENDING_QUEUE_FORMAT' not in vars:
+if 'PENDING_QUEUE_FORMAT' not in vars():
     PENDING_QUEUE_FORMAT = 'original'
 
 # PENDING_LIFETIME
@@ -1094,10 +1094,10 @@ if 'PENDING_QUEUE_FORMAT' not in vars:
 # Examples:
 #
 # PENDING_LIFETIME = "24h" # messages can live for 24 hours
-# PENDING_LIFETIME = "1M"  # messages can live for 1 month
+    # PENDING_LIFETIME = "1M"  # messages can live for 1 month
 #
 # Default is 14d (14 day lifetime)
-if 'PENDING_LIFETIME' not in vars:
+if 'PENDING_LIFETIME' not in vars():
     PENDING_LIFETIME = '14d'
 
 # PENDING_CLEANUP_ODDS
@@ -1122,7 +1122,7 @@ if 'PENDING_LIFETIME' not in vars:
 #
 # Default is 0.01, or 1% chance of cleanup for every message received,
 # or cleanup approximately once per 100 messages received.
-if 'PENDING_CLEANUP_ODDS' not in vars:
+if 'PENDING_CLEANUP_ODDS' not in vars():
     PENDING_CLEANUP_ODDS = 0.01
 
 # PENDING_CACHE
@@ -1130,7 +1130,7 @@ if 'PENDING_CLEANUP_ODDS' not in vars:
 # --cache option.
 #
 # Default is ~/.tmda/.pendingcache
-if 'PENDING_CACHE' not in vars:
+if 'PENDING_CACHE' not in vars():
     PENDING_CACHE = os.path.join(DATADIR, '.pendingcache')
     
 # PENDING_CACHE_LEN
@@ -1140,7 +1140,7 @@ if 'PENDING_CACHE' not in vars:
 # previously viewed messages again.
 #
 # Default is 5000
-if 'PENDING_CACHE_LEN' not in vars:
+if 'PENDING_CACHE_LEN' not in vars():
     PENDING_CACHE_LEN = 5000
 
 # PENDING_BLACKLIST_APPEND
@@ -1153,7 +1153,7 @@ if 'PENDING_CACHE_LEN' not in vars:
 # PENDING_BLACKLIST_APPEND = "~/.tmda/lists/blacklist"
 #
 # No default
-if 'PENDING_BLACKLIST_APPEND' not in vars:
+if 'PENDING_BLACKLIST_APPEND' not in vars():
     PENDING_BLACKLIST_APPEND = None
 
 # PENDING_DELETE_APPEND
@@ -1168,7 +1168,7 @@ if 'PENDING_BLACKLIST_APPEND' not in vars:
 # PENDING_DELETE_APPEND = "~/.tmda/lists/blacklist"
 #
 # No default
-if 'PENDING_DELETE_APPEND' not in vars:
+if 'PENDING_DELETE_APPEND' not in vars():
     PENDING_DELETE_APPEND = None
 
 # PENDING_RELEASE_APPEND
@@ -1181,7 +1181,7 @@ if 'PENDING_DELETE_APPEND' not in vars:
 # PENDING_RELEASE_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
-if 'PENDING_RELEASE_APPEND' not in vars:
+if 'PENDING_RELEASE_APPEND' not in vars():
     PENDING_RELEASE_APPEND = None
 
 # PENDING_WHITELIST_APPEND
@@ -1194,7 +1194,7 @@ if 'PENDING_RELEASE_APPEND' not in vars:
 # PENDING_WHITELIST_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
-if 'PENDING_WHITELIST_APPEND' not in vars:
+if 'PENDING_WHITELIST_APPEND' not in vars():
     PENDING_WHITELIST_APPEND = None
 
 # PENDING_WHITELIST_RELEASE
@@ -1210,7 +1210,7 @@ if 'PENDING_WHITELIST_APPEND' not in vars:
 #     the envelope sender to PENDING_WHITELIST_APPEND
 #
 # Default is 1
-if 'PENDING_WHITELIST_RELEASE' not in vars:
+if 'PENDING_WHITELIST_RELEASE' not in vars():
     PENDING_WHITELIST_RELEASE = 1
 
 # ADDED_HEADERS_CLIENT
@@ -1232,14 +1232,14 @@ if 'PENDING_WHITELIST_RELEASE' not in vars:
 #     "X-Favorite-Author" : "James Joyce",
 #     "X-OperatingSystem" : os.uname()[0],
 #     "Organization" : os.environ.get("ORGANIZATION"),
-#     "X-Uptime" : os.popen("/usr/bin/uptime").read().strip(),
+#     "X-Uptime" : os.Popen("/usr/bin/uptime").read().strip(),
 #     "X-Now-Reading" : random.choice(open
 #                                     ("/home/jasonrm/.now-reading").
 #                                     readlines()).strip()
 #     }
 #
 # No default
-if 'ADDED_HEADERS_CLIENT' not in vars:
+if 'ADDED_HEADERS_CLIENT' not in vars():
     ADDED_HEADERS_CLIENT = None
 
 # ADDED_HEADERS_SERVER
@@ -1251,7 +1251,7 @@ if 'ADDED_HEADERS_CLIENT' not in vars:
 # See ADDED_HEADERS_CLIENT (above) for some examples.
 #
 # No default
-if 'ADDED_HEADERS_SERVER' not in vars:
+if 'ADDED_HEADERS_SERVER' not in vars():
     ADDED_HEADERS_SERVER = None
 
 # PRIMARY_ADDRESS_MATCH
@@ -1289,7 +1289,7 @@ if 'ADDED_HEADERS_SERVER' not in vars:
 # 6 - Always a match. e.g, king@grassland.com and elvis@parsely.com.
 #
 # Default is 5
-if 'PRIMARY_ADDRESS_MATCH' not in vars:
+if 'PRIMARY_ADDRESS_MATCH' not in vars():
     PRIMARY_ADDRESS_MATCH = 5
 
 # PURGED_HEADERS_CLIENT
@@ -1307,7 +1307,7 @@ if 'PRIMARY_ADDRESS_MATCH' not in vars:
 # PURGED_HEADERS_CLIENT = ["bcc", "resent-bcc", "x-mailer", "user-agent"]
 #
 # Default is "Bcc:" and "Resent-Bcc"
-if 'PURGED_HEADERS_CLIENT' not in vars:
+if 'PURGED_HEADERS_CLIENT' not in vars():
     PURGED_HEADERS_CLIENT = ["bcc", "resent-bcc"]
 
 # PURGED_HEADERS_SERVER
@@ -1319,7 +1319,7 @@ if 'PURGED_HEADERS_CLIENT' not in vars:
 # See PURGED_HEADERS_CLIENT (above) for some examples.
 #
 # No default
-if 'PURGED_HEADERS_SERVER' not in vars:
+if 'PURGED_HEADERS_SERVER' not in vars():
     PURGED_HEADERS_SERVER = None
 
 # PURGED_HEADERS_DELIVERY
@@ -1332,7 +1332,7 @@ if 'PURGED_HEADERS_SERVER' not in vars:
 # See PURGED_HEADERS_CLIENT (above) for some examples.
 #
 # No default
-if 'PURGED_HEADERS_DELIVERY' not in vars:
+if 'PURGED_HEADERS_DELIVERY' not in vars():
     PURGED_HEADERS_DELIVERY = None
 
 # RECIPIENT_HEADER
@@ -1362,7 +1362,7 @@ if 'PURGED_HEADERS_DELIVERY' not in vars:
 # will break the confirmation process.
 #
 # No default
-if 'RECIPIENT_HEADER' not in vars:
+if 'RECIPIENT_HEADER' not in vars():
     RECIPIENT_HEADER = None
 
 # TAGS_CONFIRM
@@ -1375,7 +1375,7 @@ if 'RECIPIENT_HEADER' not in vars:
 # TAGS_CONFIRM = ['confirm', 'c']
 #
 # Default is 'confirm'
-if 'TAGS_CONFIRM' not in vars:
+if 'TAGS_CONFIRM' not in vars():
     TAGS_CONFIRM = ['confirm']
 
 # TAGS_DATED
@@ -1388,7 +1388,7 @@ if 'TAGS_CONFIRM' not in vars:
 # TAGS_DATED = ['dated', 'd', 'exp', 'expires']
 #
 # Default is 'dated'
-if 'TAGS_DATED' not in vars:
+if 'TAGS_DATED' not in vars():
     TAGS_DATED = ['dated']
 
 # TAGS_KEYWORD
@@ -1401,7 +1401,7 @@ if 'TAGS_DATED' not in vars:
 # TAGS_KEYWORD = ['keyword', 'key', 'kw']
 #
 # Default is 'keyword'
-if 'TAGS_KEYWORD' not in vars:
+if 'TAGS_KEYWORD' not in vars():
     TAGS_KEYWORD = ['keyword']
 
 # TAGS_SENDER
@@ -1414,7 +1414,7 @@ if 'TAGS_KEYWORD' not in vars:
 # TAGS_SENDER = ['sender', 's']
 #
 # Default is 'sender'
-if 'TAGS_SENDER' not in vars:
+if 'TAGS_SENDER' not in vars():
     TAGS_SENDER = ['sender']
 
 # TERSE_SUMMARY_HEADERS
@@ -1430,7 +1430,7 @@ if 'TAGS_SENDER' not in vars:
 # TERSE_SUMMARY_HEADERS = ["from_name", "from_address", "subject"]
 #
 # Default is the Fullname followed by Subject.
-if 'TERSE_SUMMARY_HEADERS' not in vars:
+if 'TERSE_SUMMARY_HEADERS' not in vars():
     TERSE_SUMMARY_HEADERS = ['from_name', 'subject']
 
 # TMDAINJECT
@@ -1452,7 +1452,7 @@ if 'TERSE_SUMMARY_HEADERS' not in vars:
 # TMDAINJECT = "di"
 #
 # No default.
-if 'TMDAINJECT' not in vars:
+if 'TMDAINJECT' not in vars():
     TMDAINJECT = None
 
 # MAIL_FOLLOWUP_TO
@@ -1477,7 +1477,7 @@ if 'TMDAINJECT' not in vars:
 # MAIL_FOLLOWUP_TO = ["tmda-users@tmda.net", "postfix-users@postfix.org"]
 #
 # No default.
-if 'MAIL_FOLLOWUP_TO' not in vars:
+if 'MAIL_FOLLOWUP_TO' not in vars():
     MAIL_FOLLOWUP_TO = None
     
 # SUMMARY_HEADERS
@@ -1491,7 +1491,7 @@ if 'MAIL_FOLLOWUP_TO' not in vars:
 # SUMMARY_HEADERS = ['date', 'from', 'to', 'subject']
 #
 # Default is Date, From, To, and Subject.
-if 'SUMMARY_HEADERS' not in vars:
+if 'SUMMARY_HEADERS' not in vars():
     SUMMARY_HEADERS = ['date', 'from', 'to', 'subject']
 
 # DATED_TIMEOUT
@@ -1499,7 +1499,7 @@ if 'SUMMARY_HEADERS' not in vars:
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
 #
 # Default is 5d (5 days).
-if 'DATED_TIMEOUT' not in vars:
+if 'DATED_TIMEOUT' not in vars():
     DATED_TIMEOUT = "5d"
 
 # USERNAME
@@ -1509,7 +1509,7 @@ if 'DATED_TIMEOUT' not in vars:
 # USERNAME = "jdoe"
 #
 # Defaults to your UNIX username.
-if 'USERNAME' not in vars:
+if 'USERNAME' not in vars():
     USERNAME = Util.getusername()
 
 # TIMEOUT_UNITS
@@ -1529,7 +1529,7 @@ if 'USERNAME' not in vars:
 #       's' : "segundos"}
 #
 # Default is English values.
-if 'TIMEOUT_UNITS' not in vars:
+if 'TIMEOUT_UNITS' not in vars():
     TIMEOUT_UNITS = {
         'Y' : "years",
         'M' : "months",
@@ -1561,7 +1561,7 @@ if 'TIMEOUT_UNITS' not in vars:
 # Subject: Re: You're fired!
 #
 # Default is False (turned off)
-if 'X_TMDA_IN_SUBJECT' not in vars:
+if 'X_TMDA_IN_SUBJECT' not in vars():
     X_TMDA_IN_SUBJECT = False
 
 # CRYPT_KEY_FILE
@@ -1569,7 +1569,7 @@ if 'X_TMDA_IN_SUBJECT' not in vars:
 # `tmda-keygen' program.  The key should be unquoted in the file.
 # This file must be chmod 400 or 600, unless ALLOW_MODE_640 is on.
 # Default is ~/.tmda/crypt_key
-if 'CRYPT_KEY_FILE' not in vars:
+if 'CRYPT_KEY_FILE' not in vars():
     CRYPT_KEY_FILE = os.path.join(DATADIR, 'crypt_key')
 
 ###################################
@@ -1614,8 +1614,8 @@ for var in _path_vars:
 if os.path.exists(CRYPT_KEY_FILE):
     if os.name == 'posix':
         crypt_key_filemode = Util.getfilemode(CRYPT_KEY_FILE)
-        if crypt_key_filemode not in (400, 600):
-            if ALLOW_MODE_640 and crypt_key_filemode == 640:
+        if crypt_key_filemode not in ('0o400', '0c600'):
+            if ALLOW_MODE_640 and crypt_key_filemode == '0c640':
                 pass
             else:
                 raise Errors.ConfigError(CRYPT_KEY_FILE + " must be chmod 400 or 600!")

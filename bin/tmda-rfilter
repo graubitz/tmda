@@ -48,7 +48,7 @@ def setvuserhomedir(vhomescript):
     username = ''
     for part in parts:
         username += part
-        fpin = os.popen(cmd % (username,))
+        fpin = os.Popen(cmd % (username,))
         vuserhomedir = fpin.read().strip()
         if fpin.close() is None:
             os.environ['HOME'] = vuserhomedir

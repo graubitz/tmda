@@ -27,7 +27,7 @@ import hmac
 import imaplib
 import hashlib
 import os
-import popen
+from subprocess import Popen
 import poplib
 import socket
 import sys
@@ -529,8 +529,8 @@ class Auth(Util.Debugable):
     def __pipecmd(self, command, *strings):
         """Execs a command and pipes strings into stdin
         Returns the errorcode"""
-        popen._cleanup()
-        cmd = popen.Popen3(command, 1, bufsize=-1)
+        Popen._cleanup()
+        cmd = Popen.Popen3(command, 1, bufsize=-1)
         cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
         if strings:
             # Write to the tochild file object.

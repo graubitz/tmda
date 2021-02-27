@@ -30,7 +30,7 @@ Filter file syntax documented in htdocs/config-filter.html
 
 
 import os
-import popen
+from subprocess import Popen
 import re
 import string
 import sys
@@ -1038,7 +1038,7 @@ class FilterParser:
             # A match is found if the command exits with a zero exit
             # status.
             if source == 'pipe-headers' and msg_headers:
-                cmd = popen.Popen3(match, 1, bufsize=-1)
+                cmd = Popen.Popen3(match, 1, bufsize=-1)
                 cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
                 cmdin.write(msg_headers)
                 cmdin.flush()
@@ -1063,7 +1063,7 @@ class FilterParser:
             # A match is found if the command exits with a zero exit
             # status.
             if source == 'pipe' and msg_body and msg_headers:
-                cmd = popen.Popen3(match, 1, bufsize=-1)
+                cmd = Popen.Popen3(match, 1, bufsize=-1)
                 cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
                 cmdin.write(msg_headers + '\n' + msg_body)
                 cmdin.flush()
