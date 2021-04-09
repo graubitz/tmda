@@ -48,14 +48,15 @@ def alarm_handler(signum, frame):
     print ('Signal handler called with signal', signum)
     raise IOError("Couldn't open device!")
 
+
 def lock_file(fp):
     """Do fcntl file locking."""
     fcntl.flock(fp.fileno(), fcntl.LOCK_EX)
 
+
 def unlock_file(fp):
     """Do fcntl file unlocking."""
     fcntl.flock(fp.fileno(), fcntl.LOCK_UN)
-
 
 
 class MaildirQueue(Queue):
@@ -63,13 +64,11 @@ class MaildirQueue(Queue):
         Queue.__init__(self)
         self.format = "maildir"
 
-
     def exists(self):
         if os.path.exists(Defaults.PENDING_DIR):
             return True
         else:
             return False
-
 
     def _create(self):
         if not self.exists():
@@ -78,10 +77,8 @@ class MaildirQueue(Queue):
             os.mkdir(os.path.join(dirpath, 'new'), 0o700)
             os.mkdir(os.path.join(dirpath, 'tmp'), 0o700)
 
-
     def _convert(self):
         pass
-
 
     def cleanup(self):
 
@@ -125,7 +122,6 @@ class MaildirQueue(Queue):
                 # in case of concurrent cleanups
                 pass
 
-
     def fetch_ids(self):
         cwd = os.getcwd()
         os.chdir(os.path.join(Defaults.PENDING_DIR, 'new'))
@@ -136,7 +132,6 @@ class MaildirQueue(Queue):
                for i in new_msgs + cur_msgs]
         os.chdir(cwd)
         return ids
-
 
     def insert_message(self, msg, mailid, recipient):
         # Create the Maildir if necessary.
@@ -149,7 +144,6 @@ class MaildirQueue(Queue):
         self.__deliver_maildir(Util.msg_as_string(msg), time, pid, 
                                Defaults.PENDING_DIR)
         del msg['X-TMDA-Recipient']
-
 
     def fetch_message(self, mailid, fullParse=False):
         msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
@@ -164,7 +158,6 @@ class MaildirQueue(Queue):
             # couldn't find message, defer and retry until we find it
             raise IOError("couldn't locate %s, will retry" % m)
 
-
     def delete_message(self, mailid):
         msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
                      + '1*.[0-9]*.*')) + \
@@ -173,7 +166,6 @@ class MaildirQueue(Queue):
         for m in msgs:
             if mailid in m:
                 os.unlink(m)
-
 
     def find_message(self, mailid):
         cwd = os.getcwd()
@@ -194,7 +186,6 @@ class MaildirQueue(Queue):
         # give up; message is not there
         os.chdir(cwd)
         return False
-
 
     def __deliver_maildir(self, message, time, pid, maildir):
         """Reliably deliver a mail message into a Maildir.

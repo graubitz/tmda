@@ -119,10 +119,10 @@ class Queue:
     def init(self):
         qformat = Defaults.PENDING_QUEUE_FORMAT
         if qformat.lower() == 'original':
-            from . import OriginalQueue
+            from TMDA.Queue.OriginalQueue import OriginalQueue
             return OriginalQueue()
         if qformat.lower() == 'maildir':
-            from . import MaildirQueue
+            from TMDA.Queue.MaildirQueue import MaildirQueue
             return MaildirQueue()
         else:
             raise Errors.ConfigError(

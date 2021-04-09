@@ -40,7 +40,7 @@ import time
 
 from TMDA import Defaults
 from TMDA import Util
-from TMDA.Queue.Queue import Queue
+from .Queue import Queue
 
 
 

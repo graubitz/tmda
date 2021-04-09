@@ -26,21 +26,25 @@ import binascii
 import os
 import re
 import time
+import hmac
+import hashlib
 
-from . import Defaults
-from . import HMAC
+from TMDA.Defaults import *
 from . import Util
+
+
+
 
 
 def confirmationmac(time, pid, keyword=None):
     """Expects time, pid and optionally keyword as strings,
     and returns an HMAC in hex."""
-    chmac = HMAC.hmac(Defaults.CRYPT_KEY)
-    chmac.update(time)
-    chmac.update(pid)
+    chmac = hmac.new(CRYPT_KEY, None, hashlib.sha1)
+    chmac.update(time.encode('utf-8'))
+    chmac.update(pid.encode('utf-8'))
     if keyword:
-        chmac.update(keyword)
-    return binascii.hexlify(chmac.digest()[:Defaults.HMAC_BYTES])
+        chmac.update(keyword.encode('utf-8'))
+    return binascii.hexlify(chmac.digest()[:HMAC_BYTES])
 
 
 def make_confirm_cookie(time, pid, keyword=None):
@@ -54,27 +58,27 @@ def make_confirm_cookie(time, pid, keyword=None):
 def make_confirm_address(address, time, pid, keyword=None):
     """Return a full confirmation-style e-mail address."""
     confirm_cookie = make_confirm_cookie(time, pid, keyword)
-    if Defaults.CONFIRM_ADDRESS:
-        address = Defaults.CONFIRM_ADDRESS
+    if CONFIRM_ADDRESS:
+        address = CONFIRM_ADDRESS
     username, hostname = address.split('@')
     confirm_address = '%s%s%s%s%s@%s' % (username,
-                                         Defaults.RECIPIENT_DELIMITER,
-                                         Defaults.TAGS_CONFIRM[0],
-                                         Defaults.RECIPIENT_DELIMITER,
+                                         RECIPIENT_DELIMITER,
+                                         TAGS_CONFIRM[0],
+                                         RECIPIENT_DELIMITER,
                                          confirm_cookie, hostname)
     return confirm_address
 
 
 def datemac(time):
     """Expects time as a string, and returns an HMAC in hex."""
-    datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:Defaults.HMAC_BYTES]
+    datemac = hmac.new(CRYPT_KEY,time).digest()[:HMAC_BYTES]
     return binascii.hexlify(datemac)
 
 
 def make_dated_cookie(time, timeout = None):
     """Return a dated-style cookie (expire date + HMAC)."""
     tmda_timeout = timeout or os.environ.get('TMDA_TIMEOUT')
-    if not tmda_timeout:tmda_timeout = Defaults.DATED_TIMEOUT
+    if not tmda_timeout:tmda_timeout = DATED_TIMEOUT
     expire_time = str(int(time) + Util.seconds(tmda_timeout))
     datedmac = datemac(expire_time)
     return expire_time + '.' + datedmac
@@ -86,9 +90,9 @@ def make_dated_address(address):
     dated_cookie = make_dated_cookie(now)
     username, hostname = address.split('@')
     dated_address = '%s%s%s%s%s@%s' %(username,
-                                      Defaults.RECIPIENT_DELIMITER,
-                                      Defaults.TAGS_DATED[0],
-                                      Defaults.RECIPIENT_DELIMITER,
+                                      RECIPIENT_DELIMITER,
+                                      TAGS_DATED[0],
+                                      RECIPIENT_DELIMITER,
                                       dated_cookie, hostname)
     return dated_address
 
@@ -96,8 +100,8 @@ def make_dated_address(address):
 def make_sender_cookie(address):
     """Return a sender-style cookie based on the given address."""
     address = address.lower()
-    sender_cookie = HMAC.new(Defaults.CRYPT_KEY,
-                             address).digest()[:Defaults.HMAC_BYTES]
+    sender_cookie = hmac.new(CRYPT_KEY,
+                             address).digest()[:HMAC_BYTES]
     return binascii.hexlify(sender_cookie)
 
 
@@ -106,16 +110,16 @@ def make_sender_address(address, sender):
     sender_cookie = make_sender_cookie(sender)
     username, hostname = address.split('@')
     sender_address = '%s%s%s%s%s@%s' %(username,
-                                       Defaults.RECIPIENT_DELIMITER,
-                                       Defaults.TAGS_SENDER[0],
-                                       Defaults.RECIPIENT_DELIMITER,
+                                       RECIPIENT_DELIMITER,
+                                       TAGS_SENDER[0],
+                                       RECIPIENT_DELIMITER,
                                        sender_cookie, hostname)
     return sender_address
 
 
 def make_keywordmac(keyword):
     """Expects a keyword as a string, returns an HMAC in hex."""
-    keywordmac = HMAC.new(Defaults.CRYPT_KEY, keyword).digest()[:Defaults.HMAC_BYTES]
+    keywordmac = hmac.new(CRYPT_KEY, keyword).digest()[:HMAC_BYTES]
     return binascii.hexlify(keywordmac)
 
 
@@ -124,7 +128,7 @@ def make_keyword_cookie(keyword):
     # Characters outside of an RFC2822 atom token are changed to '?'
     keyword = re.sub("[^a-zA-Z0-9!#$%&'*+-/=?^_`{|}~-]", "?", keyword)
     # We don't allow the RECIPIENT_DELIMITER in a keyword; replace with `?'
-    keyword = keyword.replace(Defaults.RECIPIENT_DELIMITER, '?')
+    keyword = keyword.replace(RECIPIENT_DELIMITER, '?')
     keywordmac = make_keywordmac(keyword)
     return '%s.%s' % (keyword, keywordmac)
 
@@ -135,9 +139,9 @@ def make_keyword_address(address, keyword):
     keyword_cookie = make_keyword_cookie(keyword)
     username, hostname = address.split('@')
     keyword_address = '%s%s%s%s%s@%s' %(username,
-                                        Defaults.RECIPIENT_DELIMITER,
-                                        Defaults.TAGS_KEYWORD[0],
-                                        Defaults.RECIPIENT_DELIMITER,
+                                        RECIPIENT_DELIMITER,
+                                        TAGS_KEYWORD[0],
+                                        RECIPIENT_DELIMITER,
                                         keyword_cookie, hostname)
     return keyword_address
 
@@ -145,7 +149,7 @@ def make_keyword_address(address, keyword):
 def make_fingerprint(hdrlist):
     """Expects a list of strings, and returns a full (unsliced) HMAC
     as a base64 encoded string (sans newline)."""
-    fp = HMAC.hmac(Defaults.CRYPT_KEY)
+    fp = hmac.hmac(CRYPT_KEY)
     for hdr in hdrlist:
-        fp.update(hdr)
+        fp.update(hdr.encode('utf-8'))
     return binascii.b2a_base64(fp.digest())[:-2]

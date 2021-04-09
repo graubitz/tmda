@@ -23,7 +23,6 @@
 
 # System imports
 import base64
-import hmac
 import imaplib
 import hashlib
 import os
@@ -37,6 +36,7 @@ import time
 from . import Version
 from . import Util
 from . import Errors
+from .HMAC import hmac
 
 class Auth(Util.Debugable):
     """Authentication mechanisms for TMDA"""

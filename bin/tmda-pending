@@ -306,7 +306,6 @@ from TMDA import Pending
 from TMDA import Errors
 
 
-
 def main():
     if opts.interactive:
         QueueObject = Pending.InteractiveQueue

@@ -35,7 +35,7 @@ from pip._vendor.distlib.compat import raw_input
 from . import Defaults
 from . import Errors
 from . import Util
-from TMDA.Queue.Queue import Queue
+from TMDA.Queue.Queue import Queue;
 
 
 Q = Queue()
@@ -468,9 +468,9 @@ class Message:
     def getConfirmAddress(self):
         if not self.confirm_accept_address:
             if self.recipient:
-                import Cookie
+                from .Cookie import make_confirm_address;
                 (timestamp, pid) = self.msgid.split('.')
-                self.confirm_accept_address =   Cookie.make_confirm_address(
+                self.confirm_accept_address = make_confirm_address(
                                                 self.recipient, timestamp, pid,
                                                 'accept')
             else:
