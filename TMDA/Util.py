@@ -615,7 +615,11 @@ def decode_header(str):
         parts = []
         pairs = header.decode_header(str)
         for pair in pairs:
-            parts.append(str(pair[0]))
+
+            if isinstance(pair[0], (bytes, bytearray)):
+                parts.append(pair[0].decode())
+            else:
+                parts.append(pair[0])
         decoded_string = ' '.join(parts)
         return decoded_string
     except email.errors.HeaderParseError:
