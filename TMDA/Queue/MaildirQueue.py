@@ -109,7 +109,7 @@ class MaildirQueue(Queue):
                     break
             if Defaults.PENDING_DELETE_APPEND:
                 try:
-                    msgobj = Util.msg_from_file(open(fpath, 'r'))
+                    msgobj = Util.msg_from_file(open(fpath, 'r', encoding="ISO-8859-1"))
                 except IOError:
                     # in case of concurrent cleanups
                     pass
@@ -152,7 +152,7 @@ class MaildirQueue(Queue):
                            + '1*.[0-9]*.*'))
         for m in msgs:
             if mailid in m:
-                msg = Util.msg_from_file(open(m, 'r'),fullParse=fullParse)
+                msg = Util.msg_from_file(open(m, 'r', encoding="ISO-8859-1"),fullParse=fullParse)
                 return msg
         else:
             # couldn't find message, defer and retry until we find it

@@ -87,7 +87,7 @@ class OriginalQueue(Queue):
             fpath = os.path.join(Defaults.PENDING_DIR, msg)
             if Defaults.PENDING_DELETE_APPEND:
                 try:
-                    msgobj = Util.msg_from_file(open(fpath, 'r'))
+                    msgobj = Util.msg_from_file(open(fpath, 'r', encoding="ISO-8859-1"))
                 except IOError:
                     # in case of concurrent cleanups
                     pass
@@ -126,7 +126,7 @@ class OriginalQueue(Queue):
 
     def fetch_message(self, mailid, fullParse=False):
         fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
-        msg = Util.msg_from_file(open(fpath, 'r'),fullParse=fullParse)
+        msg = Util.msg_from_file(open(fpath, 'r', encoding="ISO-8859-1"),fullParse=fullParse)
         return msg
 
 

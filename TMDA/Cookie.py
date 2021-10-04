@@ -40,10 +40,10 @@ def confirmationmac(time, pid, keyword=None):
     """Expects time, pid and optionally keyword as strings,
     and returns an HMAC in hex."""
     chmac = hmac.new(CRYPT_KEY, None, hashlib.sha1)
-    chmac.update(time.encode('utf-8'))
-    chmac.update(pid.encode('utf-8'))
+    chmac.update(time.encode('iso-8859-1'))
+    chmac.update(pid.encode('iso-8859-1'))
     if keyword:
-        chmac.update(keyword.encode('utf-8'))
+        chmac.update(keyword.encode('iso-8859-1'))
     return binascii.hexlify(chmac.digest()[:HMAC_BYTES])
 
 
@@ -151,5 +151,5 @@ def make_fingerprint(hdrlist):
     as a base64 encoded string (sans newline)."""
     fp = hmac.hmac(CRYPT_KEY)
     for hdr in hdrlist:
-        fp.update(hdr.encode('utf-8'))
+        fp.update(hdr.encode('iso-8859-1'))
     return binascii.b2a_base64(fp.digest())[:-2]

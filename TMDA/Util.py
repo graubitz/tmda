@@ -30,7 +30,7 @@ import email.utils
 import fileinput
 import fnmatch
 import os
-from subprocess import Popen
+from subprocess import Popen, PIPE
 import re
 import socket
 import stat
@@ -38,6 +38,7 @@ import sys
 import tempfile
 import textwrap
 import time
+import subprocess
 
 from . import Errors
 
@@ -349,9 +350,15 @@ def pipecmd(command, *strings):
     General Public License version 2.
     """
     try:
-        Popen._cleanup()
-        cmd = Popen.Popen3(command, 1, bufsize=-1)
-        cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+
+        cmd = subprocess.Popen(command, bufsize=-1,
+              stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True, encoding='utf8')
+        cmdin, cmdout, cmderr = cmd.stdin, cmd.stdout, cmd.stderr
+
+
+
+
+
         if strings:
             # Write to the tochild file object.
             for s in strings:
@@ -519,6 +526,7 @@ def msg_from_file(fp, fullParse=False):
         msg = Parser(Message).parse(fp)
     else:
         from email.parser import HeaderParser
+
         msg = HeaderParser(Message).parse(fp)
     #msg.header_parsed = True
     return msg
@@ -615,9 +623,8 @@ def decode_header(str):
         parts = []
         pairs = header.decode_header(str)
         for pair in pairs:
-
             if isinstance(pair[0], (bytes, bytearray)):
-                parts.append(pair[0].decode())
+                parts.append(pair[0].decode(errors='ignore'))
             else:
                 parts.append(pair[0])
         decoded_string = ' '.join(parts)
